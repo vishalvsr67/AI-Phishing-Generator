@@ -139,8 +139,8 @@ const Dashboard = () => {
                 <span><ShieldAlert size={14} color="#ef4444"/> {scenario.threatTheme}</span>
               </div>
 
-              {/* Awareness Logic: The Scenario */}
-              <div className="scenario-body" style={{ borderLeftColor: '#ef4444' }}>
+              {/* 🔥 FIX IS HERE: textAlign and whiteSpace added to this div 👇 */}
+              <div className="scenario-body" style={{ borderLeftColor: '#ef4444', textAlign: 'left', whiteSpace: 'pre-wrap' }}>
                 <div style={{ marginBottom: '10px', color: '#ef4444', fontWeight: 'bold', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
                   <ShieldAlert size={14} /> SIMULATED ATTACK CONTENT:
                 </div>
