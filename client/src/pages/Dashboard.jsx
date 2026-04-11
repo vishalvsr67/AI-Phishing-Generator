@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { motion } from 'framer-motion';
-import { Database, ShieldAlert, Activity, User, Target, Mail, Download, Send, ShieldCheck, Users, BarChart3 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom'; 
+import { Database, ShieldAlert, Activity, User, Target, Mail, Download, ShieldCheck, Users, BarChart3, Fingerprint, SearchCheck, BrainCircuit, AlertTriangle } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import toast from 'react-hot-toast';
@@ -12,12 +13,16 @@ const Dashboard = () => {
   const [scenarios, setScenarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [downloadingId, setDownloadingId] = useState(null); 
-  const [sendingId, setSendingId] = useState(null);
   
+  const navigate = useNavigate(); 
   const userRole = localStorage.getItem('role');
   const token = localStorage.getItem('token');
 
   useEffect(() => {
+    if (!token) {
+      navigate('/login'); 
+      return;
+    }
     const fetchScenarios = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/scenarios', {
@@ -25,59 +30,25 @@ const Dashboard = () => {
         });
         setScenarios(response.data);
       } catch (error) {
-        console.error("Fetch Error:", error);
-        toast.error("Session expired or Unauthorized. Please login again.");
-      } finally {
-        setLoading(false);
-      }
+        if (token && error.response?.status !== 401) toast.error("Sync failed.");
+      } finally { setLoading(false); }
     };
-    if (token) fetchScenarios();
-    else setLoading(false);
-  }, [token]);
+    fetchScenarios();
+  }, [token, navigate]);
 
-  const pieData = useMemo(() => {
-    const counts = scenarios.reduce((acc, curr) => {
-      acc[curr.scenarioType] = (acc[curr.scenarioType] || 0) + 1;
-      return acc;
-    }, {});
-    return Object.keys(counts).map(key => ({ name: key, value: counts[key] }));
-  }, [scenarios]);
-
+  // Motive Analysis: Success vs Defense
   const barData = useMemo(() => {
     if (scenarios.length === 0) return [];
-    let totals = { feasibility: 0, personalization: 0, completeness: 0 };
-    let validCount = 0;
+    let totals = { feasibility: 0, personalization: 0 };
     scenarios.forEach(s => {
-      if (s.scores) {
-        totals.feasibility += s.scores.feasibility || 0;
-        totals.personalization += s.scores.personalization || 0;
-        totals.completeness += s.scores.completeness || 0;
-        validCount++;
-      }
+      totals.feasibility += s.scores?.feasibility || 0;
+      totals.personalization += s.scores?.personalization || 0;
     });
-    if (validCount === 0) return [];
     return [
-      { metric: 'Feasibility', score: Math.round(totals.feasibility / validCount), fill: '#10b981' },
-      { metric: 'Personalization', score: Math.round(totals.personalization / validCount), fill: '#3b82f6' },
-      { metric: 'Completeness', score: Math.round(totals.completeness / validCount), fill: '#8b5cf6' }
+      { metric: 'Attack Sophistication', score: Math.round(totals.feasibility / scenarios.length), fill: '#ef4444' },
+      { metric: 'Personalization Level', score: Math.round(totals.personalization / scenarios.length), fill: '#3b82f6' }
     ];
   }, [scenarios]);
-
-  const PIE_COLORS = ['#38bdf8', '#f59e0b', '#ec4899', '#10b981'];
-
-  const handleDispatchThreat = async (scenarioId, scenarioText, theme) => {
-    const targetEmail = window.prompt("🎯 Enter Target Email ID for Phishing Drill:");
-    if (!targetEmail || !targetEmail.includes('@')) return toast.error("Invalid Email!");
-    setSendingId(scenarioId);
-    try {
-      await axios.post('http://localhost:5000/api/send-mail', {
-        targetEmail, subject: theme, emailBody: scenarioText
-      }, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success(`Payload dispatched to ${targetEmail}!`);
-    } catch (error) {
-      toast.error("Dispatch failed.");
-    } finally { setSendingId(null); }
-  };
 
   const generatePDF = async (scenarioId, threatTheme) => {
     setDownloadingId(scenarioId);
@@ -86,111 +57,113 @@ const Dashboard = () => {
       const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#0f172a' });
       const pdf = new jsPDF('p', 'mm', 'a4');
       pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 10, 210, (canvas.height * 210) / canvas.width);
-      pdf.save(`PhishGuard_Report_${threatTheme.replace(/\s/g, '_')}.pdf`);
-      toast.success("Report Downloaded!");
-    } catch (err) { toast.error("PDF Error"); }
+      pdf.save(`Security_Audit_${threatTheme.replace(/\s/g, '_')}.pdf`);
+      toast.success("Security Report Downloaded!");
+    } catch (err) { toast.error("Export Error"); }
     finally { setDownloadingId(null); }
   };
 
+  if (loading) return <div className="app-container"><Activity className="animate-spin" /> Aligning with Project Goals...</div>;
+
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="app-container">
-      <div className="glass-card" style={{ maxWidth: '1000px', width: '100%' }}>
+      <div className="glass-card" style={{ maxWidth: '1100px', width: '100%' }}>
         
+        {/* Admin Simulation Control */}
         {userRole === 'admin' && (
-          <motion.div 
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className="admin-panel-container"
-          >
+          <div className="admin-panel-container">
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px' }}>
               <ShieldCheck size={32} color="#4f46e5" />
               <div>
-                <h2 style={{ color: 'white', margin: 0, fontSize: '1.5rem' }}>Creator Control Center</h2>
-                <span style={{ color: '#818cf8', fontSize: '0.8rem', fontWeight: 'bold' }}>ADMIN PRIVILEGES ACTIVE</span>
+                <h2 style={{ color: 'white', margin: 0 }}>Simulation Control Center</h2>
+                <span style={{ color: '#818cf8', fontSize: '0.8rem', fontWeight: 'bold' }}>SYSTEM OVERSEER MODE</span>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              <button className="admin-btn"><Users size={16} /> Manage Users</button>
-              <button className="admin-btn"><BarChart3 size={16} /> Global Logs</button>
-              <button className="admin-btn"><Activity size={16} /> System Health</button>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button className="admin-btn" onClick={() => navigate('/admin/users')}><Users size={16} /> Manage Personnel</button>
+              <button className="admin-btn" style={{background: '#4f46e5', color: 'white'}}><BarChart3 size={16} /> Threat Intelligence Logs</button>
             </div>
-          </motion.div>
+          </div>
         )}
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '2rem' }}>
-          <Database size={35} color="#818cf8" />
-          <h2 className="gradient-text" style={{ fontSize: '2rem', margin: 0 }}>Threat Intelligence Logs</h2>
+          <BrainCircuit size={35} color="#818cf8" />
+          <h2 className="gradient-text" style={{ fontSize: '2rem', margin: 0 }}>Anti-Phishing Simulation Dashboard</h2>
         </div>
 
-        {loading ? (
-          <div style={{ textAlign: 'center', color: '#94a3b8', padding: '2rem' }}>
-            <Activity className="animate-spin" size={30} style={{ margin: '0 auto', marginBottom: '10px' }} />
-            Authenticating & Fetching Secure Data...
-          </div>
-        ) : scenarios.length === 0 ? (
-          <div style={{ textAlign: 'center', color: '#94a3b8', padding: '2rem', border: '1px dashed #334155', borderRadius: '8px' }}>
-            No threat scenarios logged yet.
-          </div>
-        ) : (
-          <>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', marginBottom: '40px' }}>
-              <div className="chart-box">
-                <h3 className="chart-title">Delivery Channels</h3>
-                <ResponsiveContainer width="100%" height={250}>
-                  <PieChart>
-                    <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} dataKey="value">
-                      {pieData.map((e, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
-                    </Pie>
-                    <Tooltip />
-                    <Legend />
-                  </PieChart>
+        {/* Analytical Awareness Section */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', marginBottom: '40px' }}>
+            <div className="chart-box">
+                <h3 className="chart-title"><ShieldAlert size={18} color="#ef4444"/> Attack Vector Sophistication</h3>
+                <ResponsiveContainer width="100%" height={220}>
+                    <BarChart data={barData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                        <XAxis dataKey="metric" stroke="#94a3b8" fontSize={12} />
+                        <YAxis stroke="#94a3b8" domain={[0, 100]} />
+                        <Tooltip />
+                        <Bar dataKey="score" radius={[5, 5, 0, 0]} />
+                    </BarChart>
                 </ResponsiveContainer>
-              </div>
-              <div className="chart-box">
-                <h3 className="chart-title">Average AI Metrics</h3>
-                <ResponsiveContainer width="100%" height={250}>
-                  <BarChart data={barData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-                    <XAxis dataKey="metric" stroke="#94a3b8" fontSize={12} />
-                    <YAxis stroke="#94a3b8" domain={[0, 100]} />
-                    <Tooltip />
-                    <Bar dataKey="score" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
             </div>
+            <div className="chart-box" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '30px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+                    <AlertTriangle size={40} color="#f59e0b" />
+                    <div>
+                        <h3 style={{ margin: 0, color: 'white' }}>Risk Profile</h3>
+                        <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.9rem' }}>Project Goal: Human Vulnerability Identification</p>
+                    </div>
+                </div>
+                <div style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '15px', borderRadius: '10px', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                    <p style={{ color: '#f59e0b', fontSize: '0.85rem', margin: 0, lineHeight: '1.5' }}>
+                        The system identifies high-sophistication vectors to train users in recognizing advanced social engineering tactics.
+                    </p>
+                </div>
+            </div>
+        </div>
 
-            <h3 className="section-title">Raw Threat Logs</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-              {scenarios.map((scenario) => (
-                <motion.div key={scenario._id} id={`scenario-card-${scenario._id}`} className="scenario-card">
-                  <div className="model-badge-v2">{scenario.modelUsed}</div>
-                  <div className="card-meta">
-                    <div className="meta-item"><Mail size={16} color="#38bdf8"/> {scenario.scenarioType}</div>
-                    <div className="meta-item"><ShieldAlert size={16} color="#ef4444"/> {scenario.threatTheme}</div>
-                    <div className="meta-item"><User size={16} color="#10b981"/> {scenario.targetProfile}</div>
-                    <div className="meta-item"><Target size={16} color="#8b5cf6"/> {scenario.contextualFactor}</div>
+        {/* Awareness Logs */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+          {scenarios.map((scenario) => (
+            <div key={scenario._id} id={`scenario-card-${scenario._id}`} className="scenario-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
+                <div className="model-badge-v2">{scenario.modelUsed}</div>
+                {userRole === 'admin' && (
+                  <div style={{ color: '#38bdf8', fontSize: '0.85rem' }}>
+                    <Fingerprint size={14} /> SIM_ID: {scenario.createdBy?.username || 'SYSTEM'}
                   </div>
-                  <div className="scenario-body">{scenario.generatedEmail}</div>
-                  <div className="card-actions">
-                    <div className="score-group">
-                      <span className="score-badge feasibility">Feasibility: {scenario.scores?.feasibility}/100</span>
-                      <span className="score-badge personalization">Personalization: {scenario.scores?.personalization}/100</span>
-                    </div>
-                    <div className="btn-group">
-                      <button className="dispatch-btn" onClick={() => handleDispatchThreat(scenario._id, scenario.generatedEmail, scenario.threatTheme)} disabled={sendingId === scenario._id}>
-                        {sendingId === scenario._id ? <Activity className="animate-spin" size={18} /> : <Send size={18} />} Dispatch
-                      </button>
-                      <button className="export-btn" onClick={() => generatePDF(scenario._id, scenario.threatTheme)} disabled={downloadingId === scenario._id}>
-                        {downloadingId === scenario._id ? <Activity className="animate-spin" size={18} /> : <Download size={18} />} Export
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
+                )}
+              </div>
+              
+              <div className="card-meta">
+                <span><Mail size={14} color="#38bdf8"/> {scenario.scenarioType}</span>
+                <span><ShieldAlert size={14} color="#ef4444"/> {scenario.threatTheme}</span>
+              </div>
+
+              {/* Awareness Logic: The Scenario */}
+              <div className="scenario-body" style={{ borderLeftColor: '#ef4444' }}>
+                <div style={{ marginBottom: '10px', color: '#ef4444', fontWeight: 'bold', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <ShieldAlert size={14} /> SIMULATED ATTACK CONTENT:
+                </div>
+                {scenario.generatedEmail}
+              </div>
+              
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                   <div className="score-badge feasibility" style={{ borderColor: '#ef4444', color: '#ef4444' }}>
+                     Danger Level: {scenario.scores?.feasibility}%
+                   </div>
+                   <div className="score-badge personalization">
+                     Personalization: {scenario.scores?.personalization}%
+                   </div>
+                </div>
+                <button className="export-btn" onClick={() => generatePDF(scenario._id, scenario.threatTheme)} disabled={downloadingId === scenario._id}>
+                   {downloadingId === scenario._id ? <Activity className="animate-spin" size={16}/> : <Download size={16} />} 
+                   Export Security Audit
+                </button>
+              </div>
             </div>
-          </>
-        )}
+          ))}
+        </div>
       </div>
     </motion.div>
   );
