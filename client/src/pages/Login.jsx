@@ -28,13 +28,25 @@ const Login = () => {
       });
 
       if (isLogin) {
-        // VIP Pass (Token) ko browser ki tijori (localStorage) mein save kar lo
+        // --- 🛡️ ROLE-BASED SESSION MANAGEMENT START ---
+        
+        // 1. Save the VIP Pass (JWT Token)
         localStorage.setItem('token', response.data.token);
+        
+        // 2. Save the Identity (Username)
+        localStorage.setItem('username', response.data.username);
+        
+        // 3. Save the Permission Level (Role: admin or user) 🔥
+        // This is crucial for showing the "Creator Control Center"
+        localStorage.setItem('role', response.data.role); 
+
+        // --- 🛡️ ROLE-BASED SESSION MANAGEMENT END ---
+
         toast.success(`Welcome back, Commander ${response.data.username}`);
-        navigate('/dashboard'); // Login hote hi Dashboard pe phek do
+        navigate('/dashboard'); 
       } else {
-        toast.success("Admin Account Created! You can now login.");
-        setIsLogin(true); // Signup ke baad waapis login screen pe le aao
+        toast.success("Account Initialized! You can now authenticate.");
+        setIsLogin(true); 
         setPassword('');
       }
     } catch (error) {
@@ -62,7 +74,7 @@ const Login = () => {
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
           <ShieldCheck size={50} color="#38bdf8" style={{ margin: '0 auto', marginBottom: '10px' }} />
           <h2 style={{ margin: 0, color: 'white', fontSize: '1.8rem' }}>
-            {isLogin ? 'System Access' : 'Create Admin'}
+            {isLogin ? 'System Access' : 'Create Access Key'}
           </h2>
           <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '5px' }}>
             {isLogin ? 'Enter credentials to access threat logs' : 'Register a new master security key'}
@@ -74,7 +86,7 @@ const Login = () => {
             <User size={18} color="#94a3b8" style={{ position: 'absolute', top: '12px', left: '15px' }} />
             <input 
               type="text" 
-              placeholder="Admin Username" 
+              placeholder="Username" 
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               style={{
@@ -117,7 +129,7 @@ const Login = () => {
             onClick={() => setIsLogin(!isLogin)}
             style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', textDecoration: 'underline' }}
           >
-            {isLogin ? 'No admin key? Create one here' : 'Already have a key? Login'}
+            {isLogin ? 'New Operator? Register Access' : 'Already have a key? Login'}
           </button>
         </div>
       </motion.div>
