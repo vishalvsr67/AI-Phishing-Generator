@@ -1,7 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Zap, Lock, Terminal, ArrowRight, BrainCircuit, Activity, Target as TargetIcon, Globe, Cpu } from 'lucide-react';
+import { 
+  ShieldCheck, 
+  Zap, 
+  Lock, 
+  Terminal, 
+  ArrowRight, 
+  BrainCircuit, 
+  Activity, 
+  Target as TargetIcon, 
+  Globe, 
+  Cpu 
+} from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import Typewriter from '../components/Typewriter';
@@ -74,6 +85,7 @@ const Landing = () => {
     hidden: { opacity: 0, y: 40 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
   };
+  
   const staggerContainer = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
@@ -132,7 +144,7 @@ const Landing = () => {
         </motion.div>
       </section>
 
-      {/* 💻 2. INTERACTIVE DEMO TERMINAL (Tera Logic Safe Hai) */}
+      {/* 💻 2. INTERACTIVE DEMO TERMINAL */}
       <section style={{ display: 'flex', justifyContent: 'center', position: 'relative', zIndex: 10, padding: '0 20px', marginTop: '-10px', marginBottom: '80px' }}>
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }} style={{ width: '100%', maxWidth: '800px' }}>
           <div className="glass-panel" style={{ background: 'rgba(11, 17, 32, 0.8)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.6), 0 0 30px rgba(56, 189, 248, 0.1)' }}>
@@ -221,16 +233,16 @@ const Landing = () => {
       <footer className="footer-section">
         <div className="footer-content">
           <div className="footer-brand">
-            <ShieldCheck size={24} color="#38bdf8" style={{ filter: 'drop-shadow(0 0 5px rgba(56, 189, 248, 0.5))' }} />
-            <span className="navbar-logo" style={{ fontSize: '1.2rem', fontFamily: "'Outfit', sans-serif", fontWeight: '900', background: 'linear-gradient(to right, #38bdf8, #818cf8, #c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>PhishGuard AI</span>
+            <ShieldCheck size={28} color="#38bdf8" style={{ filter: 'drop-shadow(0 0 8px rgba(56, 189, 248, 0.6))' }} />
+            <span className="navbar-logo" style={{ fontSize: '1.5rem', fontFamily: "'Outfit', sans-serif", fontWeight: '900', background: 'linear-gradient(to right, #38bdf8, #818cf8, #c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>PhishGuard AI</span>
           </div>
           <p className="footer-text">
-            Empowering the human firewall through next-generation generative AI simulations and predictive threat modeling.
+            Empowering the human firewall through next-generation generative AI simulations and predictive threat modeling. Aligned with IEEE and MITRE ATT&CK® standards.
           </p>
           <div className="footer-links">
             <a href="#">Documentation</a>
-            <a href="#">IEEE Research Specs</a>
             <a href="#">System Architecture</a>
+            <a href="#">API Reference</a>
             <a href="#">Privacy Policy</a>
           </div>
           <div className="footer-bottom">
