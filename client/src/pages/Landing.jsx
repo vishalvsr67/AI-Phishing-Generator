@@ -11,7 +11,8 @@ import {
   Activity, 
   Target as TargetIcon, 
   Globe, 
-  Cpu 
+  Cpu,
+  AlertTriangle
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
@@ -45,6 +46,7 @@ const Landing = () => {
   const [demoUsed, setDemoUsed] = useState(false);
 
   useEffect(() => {
+    document.title = "PhishGuard AI | Home"; 
     if (localStorage.getItem('demoUsed')) {
       setDemoUsed(true);
     }
@@ -143,7 +145,7 @@ const Landing = () => {
       </section>
 
       <section className="terminal-container-fixed">
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }}>
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }} style={{ width: '100%' }}>
           <div className="glass-panel main-terminal-ui">
             <div className="terminal-header-bar">
               <Terminal size={18} color="#38bdf8" />
@@ -160,9 +162,10 @@ const Landing = () => {
                     onChange={(e) => setDemoTarget(e.target.value)}
                     className="modern-input terminal-field"
                   />
+                  {/* 🔥 CHANGE 1: 'Run Attack' changed to 'Run Simulation' */}
                   <button onClick={runDemo} disabled={loading} className="btn-glow-primary run-btn">
                     {loading ? <Activity className="animate-spin" size={20} /> : <Zap size={20} />}
-                    {loading ? 'Simulating...' : 'Run Attack'}
+                    {loading ? 'Processing...' : 'Run Simulation'}
                   </button>
                 </div>
               ) : (
@@ -181,9 +184,31 @@ const Landing = () => {
                   </div>
                 </motion.div>
               )}
+
+              {/* 🔥 CHANGE 2: Ethical Disclaimer added below terminal actions */}
+              <div style={{ textAlign: 'center', marginTop: '25px', color: '#64748b', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                <AlertTriangle size={16} color="#ef4444" />
+                <span><strong>Ethical Disclaimer:</strong> This system is strictly for cybersecurity training and awareness purposes. No real attacks are performed.</span>
+              </div>
             </div>
           </div>
         </motion.div>
+      </section>
+
+      {/* 🔥 CHANGE 3: Simple "How it works" flow added before Bento Grid */}
+      <section style={{ padding: '20px 20px 60px', textAlign: 'center', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
+        <h2 style={{ fontSize: '2rem', marginBottom: '30px', color: '#f8fafc', fontWeight: '800' }}>Engine Architecture</h2>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', flexWrap: 'wrap', color: '#cbd5e1', fontSize: '0.9rem', fontWeight: 'bold' }}>
+          <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '12px 20px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)' }}>User Input</div>
+          <ArrowRight size={18} color="#38bdf8" />
+          <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '12px 20px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)' }}>Scenario Engine</div>
+          <ArrowRight size={18} color="#38bdf8" />
+          <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '12px 20px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)' }}>AI Generation</div>
+          <ArrowRight size={18} color="#38bdf8" />
+          <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '12px 20px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)' }}>Risk Evaluation</div>
+          <ArrowRight size={18} color="#38bdf8" />
+          <div style={{ background: 'rgba(56, 189, 248, 0.1)', padding: '12px 20px', borderRadius: '10px', border: '1px solid rgba(56, 189, 248, 0.3)', color: '#38bdf8' }}>Dashboard</div>
+        </div>
       </section>
 
       <section className="features-section">
