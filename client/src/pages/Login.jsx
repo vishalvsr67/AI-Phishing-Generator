@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShieldCheck, User, KeyRound, Activity } from 'lucide-react';
+import { ShieldCheck, User, KeyRound, Activity, Lock, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Login = () => {
@@ -28,19 +28,10 @@ const Login = () => {
       });
 
       if (isLogin) {
-        // --- 🛡️ ROLE-BASED SESSION MANAGEMENT START ---
-        
-        // 1. Save the VIP Pass (JWT Token)
+        // --- 🛡️ ROLE-BASED SESSION MANAGEMENT ---
         localStorage.setItem('token', response.data.token);
-        
-        // 2. Save the Identity (Username)
         localStorage.setItem('username', response.data.username);
-        
-        // 3. Save the Permission Level (Role: admin or user) 🔥
-        // This is crucial for showing the "Creator Control Center"
         localStorage.setItem('role', response.data.role); 
-
-        // --- 🛡️ ROLE-BASED SESSION MANAGEMENT END ---
 
         toast.success(`Welcome back, Commander ${response.data.username}`);
         navigate('/dashboard'); 
@@ -57,84 +48,85 @@ const Login = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
+    <div className="landing-wrapper" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '90vh' }}>
+      {/* 🌌 Ambient Background Elements */}
+      <div className="bg-glow-orb blue-orb"></div>
+      <div className="bg-glow-orb purple-orb"></div>
+
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
+        className="glass-panel"
         style={{ 
-          background: 'rgba(15, 23, 42, 0.8)', 
           padding: '40px', 
-          borderRadius: '16px', 
-          border: '1px solid #334155',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
           width: '100%',
-          maxWidth: '400px'
+          maxWidth: '450px',
+          position: 'relative',
+          zIndex: 10
         }}
       >
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <ShieldCheck size={50} color="#38bdf8" style={{ margin: '0 auto', marginBottom: '10px' }} />
-          <h2 style={{ margin: 0, color: 'white', fontSize: '1.8rem' }}>
-            {isLogin ? 'System Access' : 'Create Access Key'}
+          <div className="lock-icon-wrapper" style={{ marginBottom: '15px' }}>
+            <Lock size={35} color="#ef4444" style={{ filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.4))' }} />
+          </div>
+          <h2 className="navbar-logo" style={{ fontSize: '2rem', marginBottom: '10px' }}>
+            {isLogin ? 'System Access' : 'Create Identity'}
           </h2>
-          <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '5px' }}>
-            {isLogin ? 'Enter credentials to access threat logs' : 'Register a new master security key'}
+          <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>
+            {isLogin ? 'Enter credentials to unlock full engine access' : 'Register your operator credentials'}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div style={{ position: 'relative' }}>
-            <User size={18} color="#94a3b8" style={{ position: 'absolute', top: '12px', left: '15px' }} />
-            <input 
-              type="text" 
-              placeholder="Username" 
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              style={{
-                width: '100%', padding: '12px 12px 12px 45px', background: '#0b1120', 
-                border: '1px solid #334155', borderRadius: '8px', color: 'white', boxSizing: 'border-box'
-              }}
-            />
+          <div className="input-group">
+            <label className="input-label"><User size={14} /> Username</label>
+            <div style={{ position: 'relative' }}>
+              <input 
+                type="text" 
+                className="modern-input" 
+                placeholder="operator_name"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                style={{ paddingLeft: '15px' }}
+              />
+            </div>
           </div>
 
-          <div style={{ position: 'relative' }}>
-            <KeyRound size={18} color="#94a3b8" style={{ position: 'absolute', top: '12px', left: '15px' }} />
-            <input 
-              type="password" 
-              placeholder="Passcode" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={{
-                width: '100%', padding: '12px 12px 12px 45px', background: '#0b1120', 
-                border: '1px solid #334155', borderRadius: '8px', color: 'white', boxSizing: 'border-box'
-              }}
-            />
+          <div className="input-group">
+            <label className="input-label"><KeyRound size={14} /> Passcode</label>
+            <div style={{ position: 'relative' }}>
+              <input 
+                type="password" 
+                className="modern-input" 
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={{ paddingLeft: '15px' }}
+              />
+            </div>
           </div>
 
           <button 
             type="submit" 
-            disabled={loading}
-            style={{
-              width: '100%', padding: '12px', background: '#38bdf8', color: '#0f172a', 
-              border: 'none', borderRadius: '8px', fontWeight: 'bold', fontSize: '1rem',
-              cursor: loading ? 'wait' : 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px'
-            }}
+            disabled={loading} 
+            className="btn-glow-primary" 
+            style={{ width: '100%', justifyContent: 'center', marginTop: '10px' }}
           >
-            {loading ? <Activity className="animate-spin" size={20} /> : null}
-            {isLogin ? 'Authenticate' : 'Initialize Protocol'}
+            {loading ? <Activity className="animate-spin" size={20} /> : (isLogin ? 'Initialize Access' : 'Register Operator')}
           </button>
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <div style={{ marginTop: '25px', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '20px' }}>
           <button 
-            onClick={() => setIsLogin(!isLogin)}
-            style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', textDecoration: 'underline' }}
+            onClick={() => setIsLogin(!isLogin)} 
+            style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600' }}
           >
-            {isLogin ? 'New Operator? Register Access' : 'Already have a key? Login'}
+            {isLogin ? "New Operator? Register Access" : "Existing Operator? Login here"}
           </button>
         </div>
       </motion.div>
     </div>
   );
 };
-
+  
 export default Login;
