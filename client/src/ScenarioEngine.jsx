@@ -67,7 +67,7 @@ const ScenarioEngine = () => {
         
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '0.5rem' }}>
           <ShieldAlert size={40} color="#38bdf8" />
-          <h1 className="gradient-text" style={{ margin: 0, fontSize: '2.5rem' }}>Attack Vector Lab</h1>
+          <h1 className="gradient-text" style={{ margin: 0, fontSize: '2.5rem' }}>PhishGuard Simulation Sandbox</h1>
         </div>
         <p className="subtitle" style={{textAlign: 'center', color: '#94a3b8', marginBottom: '2rem'}}>System Motive: Simulating Threats for Defensive Training</p>
 
