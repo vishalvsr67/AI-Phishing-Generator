@@ -11,7 +11,7 @@ body, html {
 }
 
 /* =========================================
-   TERA ORIGINAL DASHBOARD/ENGINE CSS 
+   Core Layout & Container Styles
    ========================================= */
 .app-container {
   min-height: 100vh;
@@ -252,7 +252,6 @@ body, html {
   cursor: not-allowed;
   box-shadow: none;
 }
-
 .score-item {
   background: rgba(30, 41, 59, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -328,7 +327,7 @@ body, html {
 }
 
 /* =========================================
-   🚀 SILICON VALLEY UI UPGRADES
+   Landing Page & Animations
    ========================================= */
 
 .landing-wrapper {
@@ -447,8 +446,7 @@ body, html {
   color: #94a3b8;
   margin-bottom: 25px;
   backdrop-filter: blur(10px);
-}
-
+} 
 .hero-title {
   font-size: 4rem;
   font-weight: 800;
@@ -717,7 +715,7 @@ body, html {
 }
 
 /* =========================================
-   🏁 PREMIUM FOOTER UPGRADE
+   Footer Component Styles
    ========================================= */
 .footer-section {
   position: relative;
@@ -788,7 +786,7 @@ body, html {
   font-weight: bold;
 }
 
-/* 🔒 Login specific refinements */
+/* Base Component & Utility Styles */
 .lock-icon-wrapper {
   display: inline-flex;
   padding: 15px;

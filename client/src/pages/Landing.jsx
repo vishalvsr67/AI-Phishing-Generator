@@ -55,7 +55,7 @@ const Landing = () => {
   const runDemo = async () => {
     if (!demoTarget.trim()) return toast.error("Enter a target profile to run simulation!");
     if (demoUsed) {
-      toast("Demo limit reached. Please authenticate to continue.", { icon: '🔒' });
+      toast("Demo limit reached. Please authenticate to continue.");
       return navigate('/login');
     }
 
@@ -73,7 +73,7 @@ const Landing = () => {
       setDemoUsed(true);
       toast.success("Simulation Complete!");
     } catch (error) {
-      console.error("Demo Error Details:", error);
+      console.error("[ERROR] Demo Execution Details:", error);
       toast.error(error.response?.data?.error || error.message || "Server connection failed!");
     } finally {
       setLoading(false);
@@ -98,14 +98,14 @@ const Landing = () => {
 
       <div className="ticker-wrap">
         <div className="ticker-move">
-          <span>🔴 MITRE T1566 Blocked</span>
-          <span>🟢 Gemini-2.5-Flash Online</span>
-          <span>⚠️ Spear-Phishing Payload Simulated</span>
-          <span>🛡️ Exploit Mitigated in 12ms</span>
-          <span>🔴 MITRE T1566 Blocked</span>
-          <span>🟢 Gemini-2.5-Flash Online</span>
-          <span>⚠️ Spear-Phishing Payload Simulated</span>
-          <span>🛡️ Exploit Mitigated in 12ms</span>
+          <span>[BLOCK] MITRE T1566 Blocked</span>
+          <span>[SYSTEM] Gemini-2.5-Flash Online</span>
+          <span>[WARNING] Spear-Phishing Payload Simulated</span>
+          <span>[DEFENSE] Exploit Mitigated in 12ms</span>
+          <span>[BLOCK] MITRE T1566 Blocked</span>
+          <span>[SYSTEM] Gemini-2.5-Flash Online</span>
+          <span>[WARNING] Spear-Phishing Payload Simulated</span>
+          <span>[DEFENSE] Exploit Mitigated in 12ms</span>
         </div>
       </div>
 
@@ -162,7 +162,7 @@ const Landing = () => {
                     onChange={(e) => setDemoTarget(e.target.value)}
                     className="modern-input terminal-field"
                   />
-                  {/* 🔥 CHANGE 1: 'Run Attack' changed to 'Run Simulation' */}
+                  {/* Primary simulation trigger button */}
                   <button onClick={runDemo} disabled={loading} className="btn-glow-primary run-btn">
                     {loading ? <Activity className="animate-spin" size={20} /> : <Zap size={20} />}
                     {loading ? 'Processing...' : 'Run Simulation'}
@@ -185,7 +185,7 @@ const Landing = () => {
                 </motion.div>
               )}
 
-              {/* 🔥 CHANGE 2: Ethical Disclaimer added below terminal actions */}
+              {/* Ethical Disclaimer Component */}
               <div style={{ textAlign: 'center', marginTop: '25px', color: '#64748b', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                 <AlertTriangle size={16} color="#ef4444" />
                 <span><strong>Ethical Disclaimer:</strong> This system is strictly for cybersecurity training and awareness purposes. No real attacks are performed.</span>
@@ -195,7 +195,7 @@ const Landing = () => {
         </motion.div>
       </section>
 
-      {/* 🔥 CHANGE 3: Simple "How it works" flow added before Bento Grid */}
+      {/* Engine Architecture Flow Representation */}
       <section style={{ padding: '20px 20px 60px', textAlign: 'center', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
         <h2 style={{ fontSize: '2rem', marginBottom: '30px', color: '#f8fafc', fontWeight: '800' }}>Engine Architecture</h2>
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', flexWrap: 'wrap', color: '#cbd5e1', fontSize: '0.9rem', fontWeight: 'bold' }}>

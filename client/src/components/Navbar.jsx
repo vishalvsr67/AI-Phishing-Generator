@@ -5,14 +5,14 @@ import toast from 'react-hot-toast';
 const Navbar = () => {
   const navigate = useNavigate();
   
-  // 🛡️ Get auth status and user details from localStorage
+  // Retrieve authentication status and user details from local storage
   const token = localStorage.getItem('token');
   const userRole = localStorage.getItem('role');
   const username = localStorage.getItem('username');
   const isLoggedIn = !!token;
 
   const handleLogout = () => {
-    // 🧹 Clear all security credentials from the vault
+    // Clear all security credentials from local storage
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     localStorage.removeItem('username');
@@ -23,18 +23,18 @@ const Navbar = () => {
 
   return (
     <nav style={{
-      background: 'rgba(15, 23, 42, 0.8)', /* Thoda dark premium blur */
+      background: 'rgba(15, 23, 42, 0.8)', /* Dark frosted glass effect */
       backdropFilter: 'blur(12px)', 
       borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
       width: '100%', boxSizing: 'border-box', position: 'sticky', top: 0, zIndex: 1000
     }}>
-      {/* 🚀 NAYA INNER CONTAINER: Isse screen ke edges perfectly manage honge */}
+      {/* Inner container for precise edge alignment and layout management */}
       <div style={{
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         maxWidth: '1400px', margin: '0 auto', padding: '1rem 2rem', width: '100%', boxSizing: 'border-box'
       }}>
         
-        {/* 🚀 BRAND IDENTITY (Naya Futuristic Logo applied via className) */}
+        {/* Brand Identity */}
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
           <ShieldCheck size={32} color="#38bdf8" style={{ filter: 'drop-shadow(0 0 8px rgba(56, 189, 248, 0.6))' }} />
           <span className="navbar-logo">PhishGuard AI</span>
@@ -51,7 +51,7 @@ const Navbar = () => {
                  <LayoutDashboard size={18} /> Threat Logs
               </Link>
 
-              {/* 👑 EXCLUSIVE: Admin/Creator Panel Link */}
+              {/* Role-Based Access: Admin Control Panel Link */}
               {userRole === 'admin' && (
                 <Link to="/admin/users" style={{ ...navLinkStyle, color: '#818cf8', fontWeight: '600' }}>
                   <Settings size={18} /> Admin Panel
@@ -80,7 +80,7 @@ const Navbar = () => {
   );
 }
 
-// 🎨 Professional Inline Styles
+// Component Inline Styles
 const navLinkStyle = {
   color: '#e2e8f0', 
   textDecoration: 'none', 

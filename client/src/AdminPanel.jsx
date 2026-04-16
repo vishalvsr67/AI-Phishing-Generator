@@ -9,7 +9,7 @@ const AdminPanel = () => {
   const [usersList, setUsersList] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔑 Get token for admin verification
+  // Retrieve authentication token for administrative verification
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const AdminPanel = () => {
         });
         setUsersList(response.data);
       } catch (error) {
-        console.error("Admin Fetch Error:", error);
+        console.error("[ERROR] Admin Fetch Error:", error);
         toast.error(error.response?.data?.error || "Failed to load user database");
       } finally {
         setLoading(false);
@@ -30,9 +30,9 @@ const AdminPanel = () => {
     fetchUsers();
   }, [token]);
 
-  // 🔥 Delete User Function
+  // User Termination Handler
   const handleDeleteUser = async (userId, username) => {
-    const confirmDelete = window.confirm(`⚠️ WARNING: Are you sure you want to permanently delete user '${username}'?`);
+    const confirmDelete = window.confirm(`WARNING: Are you sure you want to permanently delete user '${username}'?`);
     
     if (!confirmDelete) return;
 
@@ -41,7 +41,7 @@ const AdminPanel = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      // UI se us user ko turant hata do bina refresh kiye
+      // Optimistically update the UI by removing the deleted user without a page refresh
       setUsersList(usersList.filter(user => user._id !== userId));
       toast.success(`User ${username} terminated successfully!`);
     } catch (error) {
@@ -98,7 +98,7 @@ const AdminPanel = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                   <UserCircle size={40} color={user.role === 'admin' ? '#818cf8' : '#94a3b8'} />
                   <div>
-                    {/* 👑 Crown Hataya Yahan Se */}
+                    {/* User identity display */}
                     <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'white' }}>
                       {user.username}
                     </div>
@@ -124,7 +124,7 @@ const AdminPanel = () => {
                     {user.role}
                   </span>
 
-                  {/* DELETE BUTTON */}
+                  {/* Terminate User Button */}
                   {user.role !== 'admin' && (
                     <button 
                       onClick={() => handleDeleteUser(user._id, user.username)}

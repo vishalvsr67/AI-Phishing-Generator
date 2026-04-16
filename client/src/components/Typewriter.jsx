@@ -5,13 +5,13 @@ const Typewriter = ({ text, delay = 10 }) => {
   const [currentText, setCurrentText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Jab naya text aaye, toh purana clear kar do
+  // Re-initialize state upon receiving new text props
   useEffect(() => {
     setCurrentText('');
     setCurrentIndex(0);
   }, [text]);
 
-  // Typing logic
+  // Execute sequential character rendering
   useEffect(() => {
     if (currentIndex < text.length) {
       const timeout = setTimeout(() => {
@@ -29,7 +29,7 @@ const Typewriter = ({ text, delay = 10 }) => {
       style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}
     >
       {currentText}
-      {/* Blinking cursor effect */}
+      {/* Render animated cursor during typing phase */}
       {currentIndex < text.length && (
         <motion.span
           animate={{ opacity: [0, 1, 0] }}

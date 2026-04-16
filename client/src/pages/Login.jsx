@@ -28,7 +28,7 @@ const Login = () => {
       });
 
       if (isLogin) {
-        // --- 🛡️ ROLE-BASED SESSION MANAGEMENT ---
+        // Implementation of Role-Based Session Management via Local Storage
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('username', response.data.username);
         localStorage.setItem('role', response.data.role); 
@@ -49,7 +49,7 @@ const Login = () => {
 
   return (
     <div className="landing-wrapper" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '90vh' }}>
-      {/* 🌌 Ambient Background Elements */}
+      {/* Ambient Background Elements */}
       <div className="bg-glow-orb blue-orb"></div>
       <div className="bg-glow-orb purple-orb"></div>
 

@@ -17,7 +17,7 @@ const ScenarioEngine = () => {
   const [scores, setScores] = useState(null); 
   const [loading, setLoading] = useState(false);
   
-  // 🚩 IEEE FEATURE: Red Flags Storage
+  // State for Red Flags Storage
   const [redFlags, setRedFlags] = useState([]);
 
   const token = localStorage.getItem('token');
@@ -48,13 +48,13 @@ const ScenarioEngine = () => {
       setUsedModel(response.data.model);
       setScores(response.data.scores); 
       
-      // 🚩 XAI MAGIC: Ab backend seedha AI ke dimag se nikle flags bhej raha hai!
+      // Extract Explainable AI (XAI) red flags returned directly from the generative model
       setRedFlags(response.data.redFlags || []);
 
       toast.success("Threat Simulation Ready!");
 
     } catch (error) {
-      console.error("Inference Error:", error);
+      console.error("[ERROR] Inference Error:", error);
       toast.error(error.response?.data?.error || "Generation Engine Failed!");
     } finally {
       setLoading(false);
@@ -115,7 +115,7 @@ const ScenarioEngine = () => {
 
         <button onClick={generatePhishingEmail} disabled={loading} className="btn-primary" style={{ width: '100%', marginBottom: '30px' }}>
           {loading ? <Activity className="animate-spin" size={20} /> : <Zap size={20} />}
-          {loading ? 'Simulating Social Engineering...' : 'Synthesize Awareness Scenario 🚀'}
+          {loading ? 'Simulating Social Engineering...' : 'Synthesize Awareness Scenario'}
         </button>
 
         <div className="result-box">
@@ -141,13 +141,13 @@ const ScenarioEngine = () => {
                  </div>
             ) : scenario ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                {/* 🔥 CHANGE 1: Email Body Text Alignment Fixed Here */}
+                {/* Formatting: Email Body Text Alignment */}
                 <div className="scenario-body" style={{ borderLeft: '4px solid #ef4444', background: '#0b1120', textAlign: 'left', whiteSpace: 'pre-wrap' }}>
                    <Typewriter text={scenario} delay={10} />
                 </div>
 
-                {/* 🚩 RED FLAG ANALYSIS (Motive Feature) */}
-                {/* 🔥 CHANGE 2: Red Flags Box Text Alignment Fixed Here */}
+                {/* Red Flag Analysis Feature */}
+                {/* Formatting: Red Flags Box Text Alignment */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ background: 'rgba(245, 158, 11, 0.05)', border: '1px solid rgba(245, 158, 11, 0.2)', padding: '20px', borderRadius: '12px', textAlign: 'left' }}>
                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#f59e0b', fontWeight: 'bold', marginBottom: '15px', fontSize: '0.9rem' }}>
                       <AlertTriangle size={18} /> DEFENSIVE ANALYSIS: RED FLAGS

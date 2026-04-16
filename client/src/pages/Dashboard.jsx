@@ -36,7 +36,7 @@ const Dashboard = () => {
     fetchScenarios();
   }, [token, navigate]);
 
-  // Motive Analysis: Success vs Defense
+  // Analytical computation for Threat Metrics
   const barData = useMemo(() => {
     if (scenarios.length === 0) return [];
     let totals = { feasibility: 0, personalization: 0 };
@@ -59,11 +59,14 @@ const Dashboard = () => {
       pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 10, 210, (canvas.height * 210) / canvas.width);
       pdf.save(`Security_Audit_${threatTheme.replace(/\s/g, '_')}.pdf`);
       toast.success("Security Report Downloaded!");
-    } catch (err) { toast.error("Export Error"); }
-    finally { setDownloadingId(null); }
+    } catch (err) { 
+      toast.error("Export Error"); 
+    } finally { 
+      setDownloadingId(null); 
+    }
   };
 
-  if (loading) return <div className="app-container"><Activity className="animate-spin" /> Aligning with Project Goals...</div>;
+  if (loading) return <div className="app-container"><Activity className="animate-spin" /> Synchronizing Security Logs...</div>;
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="app-container">
@@ -139,7 +142,7 @@ const Dashboard = () => {
                 <span><ShieldAlert size={14} color="#ef4444"/> {scenario.threatTheme}</span>
               </div>
 
-              {/* 🔥 FIX IS HERE: textAlign and whiteSpace added to this div 👇 */}
+              {/* Structural formatting applied for precise text alignment and rendering */}
               <div className="scenario-body" style={{ borderLeftColor: '#ef4444', textAlign: 'left', whiteSpace: 'pre-wrap' }}>
                 <div style={{ marginBottom: '10px', color: '#ef4444', fontWeight: 'bold', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
                   <ShieldAlert size={14} /> SIMULATED ATTACK CONTENT:

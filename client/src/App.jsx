@@ -5,7 +5,7 @@ import ScenarioEngine from './ScenarioEngine';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
-import AdminPanel from './AdminPanel'; // 🔥 NAYA: Admin Panel Import kiya
+import AdminPanel from './AdminPanel'; // Admin Panel component
 import './App.css'; 
 
 const PrivateRoute = ({ children }) => {
@@ -28,7 +28,7 @@ function App() {
             <Route path="/engine" element={<PrivateRoute><ScenarioEngine /></PrivateRoute>} />
             <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
             
-            {/* 🔥 NAYA: Admin Route */}
+            {/* Admin Route */}
             <Route path="/admin/users" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />
           </Routes>
         </main>
