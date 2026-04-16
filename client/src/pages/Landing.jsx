@@ -261,7 +261,7 @@ const Landing = () => {
             <a href="#">Privacy Policy</a>
           </div>
           <div className="footer-bottom">
-            &copy; {new Date().getFullYear()} PhishGuard AI Core. Engineered by Vishal Singh. All systems operational.
+            &copy; {new Date().getFullYear()} PhishGuard AI Core. Engineered by Team B13. All systems operational.
           </div>
         </div>
       </footer>
