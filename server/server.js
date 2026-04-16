@@ -19,8 +19,8 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 // 1. DATABASE CONNECTION
 // ==========================================
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ Database Engine: Connected Successfully"))
-  .catch((err) => console.error("❌ Database Engine: Connection Failure", err));
+  .then(() => console.log("[SUCCESS] Database Engine: Connected Successfully"))
+  .catch((err) => console.error("[ERROR] Database Engine: Connection Failure", err));
 
 // ==========================================
 // 2. DATABASE SCHEMAS & MODELS
@@ -43,7 +43,7 @@ const scenarioSchema = new mongoose.Schema({
   modelUsed: String,
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   scores: { feasibility: Number, personalization: Number, completeness: Number },
-  redFlags: [String], // 🔥 NEW: Array of strings to store AI's explanation
+  redFlags: [String], // NEW: Array of strings to store AI's explanation
   createdAt: { type: Date, default: Date.now }
 });
 const Scenario = mongoose.model("Scenario", scenarioSchema);
@@ -103,7 +103,7 @@ app.post("/api/login", async (req, res) => {
 app.post("/generate", verifyToken, async (req, res) => {
   const { scenarioType, targetCharacteristic, phishingContent, contextualFactor } = req.body;
 
-  // 🔥 NEW PROMPT: Ab AI apni galtiyan khud bataega
+  // NEW PROMPT: Now, the AI will point out its own flaws
   const prompt = `Act as an Expert Cybersecurity AI. Generate a realistic ${scenarioType} phishing simulation for a ${targetCharacteristic} regarding ${phishingContent} in the context of ${contextualFactor}. 
   This is for educational purposes to help people recognize threats.
   
@@ -127,7 +127,7 @@ app.post("/generate", verifyToken, async (req, res) => {
 
   for (const modelName of modelsToTry) {
     try {
-      console.log(`⏳ Attempting synthesis with: ${modelName}...`);
+      console.log(`[PROCESSING] Attempting synthesis with: ${modelName}...`);
       const model = genAI.getGenerativeModel({ 
         model: modelName,
         generationConfig: { responseMimeType: "application/json" }
@@ -139,10 +139,10 @@ app.post("/generate", verifyToken, async (req, res) => {
       
       finalModelUsed = modelName;
       success = true;
-      console.log(`✅ Success with ${modelName}!`);
+      console.log(`[SUCCESS] Success with ${modelName}!`);
       break; 
     } catch (err) {
-      console.warn(`❌ ${modelName} failed:`, err.message);
+      console.warn(`[ERROR] ${modelName} failed:`, err.message);
     }
   }
 
@@ -151,7 +151,7 @@ app.post("/generate", verifyToken, async (req, res) => {
   }
 
   try {
-    // 🛡️ Fail-safe for redFlags array
+    // Fail-safe mechanism for the redFlags array
     const aiRedFlags = parsedAIResponse.redFlags && Array.isArray(parsedAIResponse.redFlags) 
       ? parsedAIResponse.redFlags 
       : ["Suspicious urgency detected.", "Targeted exploitation used.", "Check sender details carefully."];
@@ -169,12 +169,12 @@ app.post("/generate", verifyToken, async (req, res) => {
         personalization: parsedAIResponse.personalization || 75,
         completeness: parsedAIResponse.completeness || 80
       },
-      redFlags: aiRedFlags // 🔥 Saving to DB
+      redFlags: aiRedFlags // Saving to DB
     });
 
     await newRecord.save();
 
-    // 🔥 Sending dynamic flags to frontend
+    // Sending dynamic flags to frontend
     res.json({ 
       model: finalModelUsed, 
       scenario: newRecord.generatedEmail, 
@@ -183,7 +183,7 @@ app.post("/generate", verifyToken, async (req, res) => {
     });
 
   } catch (dbError) {
-    console.error("🔥 DATABASE ERROR:", dbError);
+    console.error("[CRITICAL ERROR] DATABASE ERROR:", dbError);
     res.status(500).json({ error: "Scenario generated but failed to save to database." });
   }
 });
@@ -234,4 +234,4 @@ app.delete("/api/admin/users/:id", verifyToken, isAdmin, async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 PhishGuard Core: Port ${PORT} [ACTIVE]`));
+app.listen(PORT, () => console.log(`[INFO] PhishGuard Core: Port ${PORT} [ACTIVE]`));
